@@ -1,80 +1,89 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CricFun Scoreboard</title><style>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CricFun Live Scoreboard</title>
+<style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:#fff;font-family:Arial,Helvetica,sans-serif}
-.stage{width:100vw;height:100vh;padding:1.05%;display:grid;grid-template-rows:18% 7% 1fr 15%;gap:.8%;background:linear-gradient(135deg,#06152be8,#071b36d9)}
-.header{display:grid;grid-template-columns:1fr .62fr 1fr;gap:.7%}.team,.middle,.panel{border:2px solid #e8b936;border-radius:12px;background:linear-gradient(125deg,#07182fee,#123f7bee);box-shadow:0 0 14px #1687ff66;padding:1%;display:flex;flex-direction:column;justify-content:center;text-align:center;min-width:0}.team img.logo{width:clamp(28px,5vw,72px);height:clamp(28px,5vw,72px);object-fit:contain;margin:0 auto 5px}.player img.photo{width:clamp(35px,5vw,76px);height:clamp(35px,5vw,76px);object-fit:cover;border-radius:50%;border:2px solid #e9c83e;margin:3px auto}.team h1{font-size:clamp(18px,3vw,48px);margin:0 0 2px;font-weight:900;font-style:italic}.score{font-size:clamp(30px,5vw,76px);font-weight:1000;color:#ffdc35;line-height:1.05;text-shadow:2px 3px #111}.team small{font-size:clamp(10px,1.1vw,17px);font-weight:800;letter-spacing:1px}.middle{border-color:#7f9dc5;background:linear-gradient(140deg,#111923,#080d15);align-items:center}.middle strong{font-size:clamp(23px,4vw,60px);font-weight:1000}.middle span{color:#ffdb3a;font-size:clamp(10px,1.3vw,19px);font-weight:900}
-.stats{display:flex;align-items:center;justify-content:space-around;background:#0b1428f2;border:2px solid #547db4;border-radius:8px;font-size:clamp(11px,1.65vw,25px);font-weight:900;gap:5px}.stats b{color:#ffdb3a}
-.main{display:grid;grid-template-columns:26% 48% 26%;gap:.5%;min-height:0}.side{display:grid;grid-template-rows:1fr 1fr;gap:1%;min-height:0}.player{border:2px solid #f0c431;border-radius:9px;background:linear-gradient(145deg,#101a2a,#102e52);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2%;min-width:0;overflow:hidden}.player.batter{border-color:#22e69b;box-shadow:0 0 12px #22e69b55}.player h2{font-size:clamp(13px,2vw,30px);margin:5px 0}.player small{font-size:clamp(10px,1.2vw,18px);color:#c1d9f5;font-weight:800}.player strong{font-size:clamp(22px,3.3vw,48px);color:#ffdb35}.player .sub{font-size:clamp(10px,1.1vw,16px);color:#e4edf9}
-.action video.center-video,.action img.center-gif{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}.action img.center-gif{display:block}.action.video-mode img.center-gif{display:none}.action.video-mode .pitch,.action.video-mode .field-line,.action.video-mode .batter-figure,.action.video-mode .ball-live{display:none}.action{position:relative;overflow:hidden;border:3px solid #328dff;border-radius:9px;background:radial-gradient(ellipse at 50% 75%,#4b9a50 0,#286c42 42%,#16452f 78%);box-shadow:0 0 16px #1687ff77;min-height:0}
-.pitch{position:absolute;left:10%;right:10%;bottom:-8%;height:37%;border-radius:50% 50% 0 0;background:linear-gradient(#c7a16b,#8a633d);border:2px solid #e2c28d;opacity:.9}
-.field-line{position:absolute;left:5%;right:5%;bottom:15%;height:2px;background:#e8e8bd;opacity:.8}
-.batter-figure{position:absolute;left:50%;bottom:12%;width:28%;height:77%;transform:translateX(-50%);animation:ready 2.8s ease-in-out infinite;filter:drop-shadow(0 5px 5px #071b1b99)}
-.helmet{position:absolute;left:34%;top:1%;width:32%;height:19%;border-radius:48% 48% 25% 25%;background:linear-gradient(120deg,#111,#34404a);border:3px solid #b7c4c8}.helmet:after{content:"";position:absolute;left:5%;right:-10%;bottom:8%;height:3px;background:#c4d0d2;transform:rotate(8deg)}
-.body-shape{position:absolute;left:24%;top:19%;width:53%;height:43%;background:linear-gradient(100deg,#101c29,#29394b,#101925);clip-path:polygon(24% 0,76% 0,100% 100%,0 100%);border-radius:18px}
-.body-shape:after{content:"CRICFUN";position:absolute;top:42%;left:15%;font-size:clamp(7px,.8vw,13px);font-weight:900;letter-spacing:1px;transform:rotate(8deg);color:#e9edf2}
-.leg{position:absolute;top:58%;width:17%;height:38%;background:linear-gradient(90deg,#111c2b,#39485a);border-radius:12px}.leg.left{left:28%;transform:rotate(8deg)}.leg.right{right:28%;transform:rotate(-12deg)}
-.arm{position:absolute;top:24%;width:13%;height:37%;background:#c78e68;border-radius:12px;transform-origin:top}.arm.left{left:24%;transform:rotate(-25deg)}.arm.right{right:22%;transform:rotate(-35deg);animation:swing 2.8s ease-in-out infinite}
-.bat{position:absolute;right:7%;top:10%;width:6%;height:64%;border-radius:6px;background:linear-gradient(90deg,#b87932,#f2d49b,#a96b2b);transform:rotate(28deg);transform-origin:bottom;animation:batswing 2.8s ease-in-out infinite;box-shadow:1px 1px 4px #111}
-.ball-live{position:absolute;left:18%;top:38%;width:clamp(8px,1vw,16px);height:clamp(8px,1vw,16px);border-radius:50%;background:#fff;border:2px solid #d33;box-shadow:0 0 12px #fff;animation:delivery 2.8s linear infinite}
-.action-label{position:absolute;top:3%;left:0;right:0;text-align:center;font-weight:1000;letter-spacing:2px;font-size:clamp(12px,1.7vw,25px);text-shadow:0 2px 5px #000}
-.action-caption{position:absolute;bottom:3%;left:0;right:0;text-align:center;font-size:clamp(10px,1.2vw,18px);font-weight:800;color:#fff;text-shadow:0 2px 4px #000}
-@keyframes ready{0%,35%,100%{transform:translateX(-50%) rotate(0)}50%,68%{transform:translateX(-50%) rotate(-5deg)}}
-@keyframes swing{0%,38%,100%{transform:rotate(-35deg)}55%,72%{transform:rotate(-105deg)}}
-@keyframes batswing{0%,38%,100%{transform:rotate(28deg)}55%,72%{transform:rotate(-48deg)}}
-@keyframes delivery{0%{left:14%;top:42%;opacity:0}18%{opacity:1}50%{left:48%;top:48%}70%{left:74%;top:20%;opacity:0}100%{left:74%;top:20%;opacity:0}}
-.footer{display:grid;grid-template-columns:1fr 1fr;gap:.7%}.overs{background:#081831f2;border:2px solid #347fff;border-radius:8px;padding:1%;display:flex;align-items:center;justify-content:center;gap:1%;font-size:clamp(11px,1.8vw,25px);font-weight:900;flex-wrap:wrap}.ball{background:#151c2b;border:1px solid #aab9d2;border-radius:5px;padding:5px 10px}.four{background:#079b5a}.six{background:#6734c5}.wicket{background:#c3263b}.notice{position:fixed;bottom:3px;left:8px;font:11px Arial;color:#ddd;text-shadow:0 1px 3px #000}
-@media(max-aspect-ratio:4/3){.stage{padding:.6%;gap:.5%}.main{grid-template-columns:25% 50% 25%}.player h2{font-size:clamp(10px,1.7vw,20px)}}
-
-:root{--cyan:#00d9ff;--blue:#147bff;--violet:#b22cff;--gold:#ffe34d}
-html,body{background:transparent!important;font-family:Arial,Helvetica,sans-serif}
-.stage{padding:.55%;grid-template-rows:18% 7% minmax(0,1fr) 15%;gap:.7%;background:radial-gradient(ellipse at 50% 30%,#17134eeb 0,#080c29ed 48%,#030612f2 100%)}
-.header{grid-template-columns:1fr .62fr 1fr;gap:.65%}
-.team,.middle,.panel{border:2px solid #287fff;border-radius:16px;background:linear-gradient(125deg,#071a43f5,#102d75f5 60%,#08122ef5);box-shadow:0 0 16px #168bff99,inset 0 0 18px #183a8b88;padding:1%}
-.team:last-child{border-color:#bb43ff;background:linear-gradient(125deg,#07122e,#14113e 60%,#300d58);box-shadow:0 0 16px #b72dff99}
-.team h1{font-size:clamp(18px,3vw,48px);text-shadow:0 0 12px #00bfff}
-.score{color:var(--gold);font-size:clamp(32px,5vw,76px);text-shadow:0 2px 4px #000}
-.middle{border-color:#974dff;background:linear-gradient(130deg,#100b37,#17115b);box-shadow:0 0 18px #a52cffaa}
-.middle strong{color:#fff;text-shadow:0 0 15px #9b4dff}
-.middle span{color:var(--gold)}
-.stats{border:1px solid #784dff;border-radius:10px;background:linear-gradient(90deg,#07112d,#16113e,#07112d);box-shadow:0 0 12px #723dff77;font-size:clamp(11px,1.55vw,24px)}
-.stats b{color:var(--gold)}
-.main{grid-template-columns:25% 50% 25%;gap:.5%}
-.side{gap:1.2%}
-.player{border:2px solid #387fff;border-radius:13px;background:linear-gradient(135deg,#050b1b,#101b3b 60%,#070d20);box-shadow:0 0 13px #176dff99,inset 0 0 20px #122b63}
-.player.batter{border-color:#d54cff;box-shadow:0 0 17px #bb35ff,inset 0 0 20px #461278}
-.player h2{font-size:clamp(13px,1.8vw,27px);text-shadow:0 0 8px #2b8cff}
-.player strong{color:var(--gold);text-shadow:0 2px 4px #000}
-.player .sub,.player small{color:#d9e8ff}
-.action{border:3px solid #b445ff;border-radius:16px;background:radial-gradient(ellipse at 50% 75%,#54a75b 0,#287b48 45%,#123c36 100%);box-shadow:0 0 18px #a62bff,0 0 30px #167bff77}
-.action-label{letter-spacing:2px;text-shadow:0 2px 6px #000,0 0 10px #b72cff}
-.action-caption{color:#fff;text-shadow:0 2px 6px #000}
-.pitch{background:linear-gradient(#d9b47a,#91633d);border-color:#f0d49d}
-.footer{grid-template-columns:1fr 1fr;gap:.6%}
-.overs{border:1px solid #347cff;border-radius:10px;background:linear-gradient(90deg,#08122e,#111b4b);box-shadow:0 0 10px #176dff66}
-.ball{border:1px solid #b5c9ff;background:#10182c;border-radius:8px;font-weight:1000}
-.four{background:#00a85a}.six{background:#6132ce}.wicket{background:#c52242}
-@media(max-aspect-ratio:4/3){.main{grid-template-columns:24% 52% 24%}.player{padding:1%}}
-
-</style></head><body><div class="stage"><div class="header"><div class="team"><img class="logo" id="team1logo" hidden><h1 id="team1">TEAM 1</h1><div class="score" id="score1">--/--</div><div id="overs1">Overs --</div></div><div class="middle"><strong id="matchState">CRICFUN LIVE</strong><span id="target">MATCH SCOREBOARD</span></div><div class="team"><img class="logo" id="team2logo" hidden><h1 id="team2">TEAM 2</h1><div class="score" id="score2">--/--</div><div id="overs2">Overs --</div></div></div>
-<div class="stats"><span>CRR <b id="crr">--</b></span><span>RRR <b id="rrr">--</b></span><span>PARTNERSHIP <b id="partnership">--</b></span><span>STATUS <b id="status">CONNECTING</b></span></div>
-<div class="main">
-<div class="side"><div class="player batter"><small>BATTER 1 • STRIKER</small><img class="photo" id="bat1photo" hidden><h2 id="bat1">Waiting for data</h2><strong id="bat1score">--</strong><div class="sub">RUNS (BALLS)</div></div><div class="player batter"><small>BATTER 2 • NON-STRIKER</small><img class="photo" id="bat2photo" hidden><h2 id="bat2">Waiting for data</h2><strong id="bat2score">--</strong><div class="sub">RUNS (BALLS)</div></div></div>
-<div class="action"><img id="actionGif" class="center-gif" src="/static/cricket-action.gif" alt="Looping cricket action animation" onerror="this.hidden=true; this.dataset.missing='true'"><video id="actionVideo" class="center-video" muted autoplay loop playsinline hidden></video><div class="action-label">LIVE CRICKET ACTION</div><div class="field-line"></div><div class="pitch"></div><div class="batter-figure"><div class="helmet"></div><div class="body-shape"></div><div class="leg left"></div><div class="leg right"></div><div class="arm left"></div><div class="arm right"></div><div class="bat"></div></div><div class="ball-live"></div><div class="action-caption">CRICFUN • ANIMATED CRICKET SCENE</div></div>
-<div class="side"><div class="player"><small>THIS OVER • BOWLER</small><img class="photo" id="bowlerphoto" hidden><h2 id="bowler">Waiting for data</h2><strong id="bowlerscore">--</strong><div class="sub">WICKETS - RUNS (OVERS)</div></div><div class="player"><small>LAST WICKET</small><h2 id="lastWicket">--</h2><strong>OUT</strong></div></div></div>
-<div class="footer"><div class="overs"><span>THIS OVER</span><div id="balls">No ball data</div></div><div class="overs"><span>REQUIRED RUN RATE</span><div id="rrr">--</div></div></div></div><div class="notice" id="notice">CricFun • Waiting for live match feed</div>
+:root{--cyan:#08d9ff;--blue:#167cff;--violet:#bd35ff;--gold:#ffe342}
+.board{width:100vw;height:100vh;padding:10px;display:grid;grid-template-rows:7% 16% 6% minmax(0,1fr) 10% 8%;gap:7px;background:radial-gradient(ellipse at 50% 25%,#17134c 0,#090d2a 52%,#030615 100%)}
+.brandbar{display:grid;grid-template-columns:1fr 1.5fr 1fr;align-items:center;text-align:center}
+.brand{font-size:clamp(20px,2.4vw,40px);font-weight:1000;font-style:italic;text-align:left;color:#fff;text-shadow:0 0 12px #087dff}.brand em{color:var(--gold);font-style:normal}.live{display:inline-block;background:#ed2545;border-radius:10px;padding:5px 13px;font-size:clamp(12px,1.5vw,24px);margin-left:8px;box-shadow:0 0 14px #ff245a}.fixture{font-size:clamp(18px,2.2vw,36px);font-weight:1000}.series{font-size:clamp(10px,1.2vw,18px);color:#c5d9ff;margin-top:2px}.live-right{text-align:right;color:#ff526e;font-weight:1000;font-size:clamp(15px,1.8vw,28px)}
+.scoreline{display:grid;grid-template-columns:1.35fr 1fr .75fr 1.2fr;gap:6px}
+.team-score,.ratebox,.targetbox{border:2px solid var(--blue);border-radius:18px;background:linear-gradient(120deg,#062052,#0b3a8a 60%,#08163b);box-shadow:0 0 18px #087dff8a,inset 0 0 18px #0b5dba66;display:flex;align-items:center;justify-content:space-around;padding:8px 14px;min-width:0}
+.team-score.right{border-color:var(--violet);background:linear-gradient(120deg,#10153b,#27105c 65%,#0a102a);box-shadow:0 0 18px #b22cff88}
+.flag{width:clamp(38px,6vw,92px);height:clamp(30px,4.8vw,72px);object-fit:contain;filter:drop-shadow(0 2px 4px #000)}
+.team-short{font-size:clamp(22px,3.3vw,52px);font-weight:1000}.total{font-size:clamp(32px,4.6vw,72px);font-weight:1000;color:var(--gold);white-space:nowrap}.overs{font-size:clamp(12px,1.5vw,23px);font-weight:800}
+.ratebox{border-color:#784aff;background:linear-gradient(120deg,#130e4c,#080d2e);font-size:clamp(13px,1.8vw,28px);font-weight:1000;gap:8px}.ratebox b,.targetbox b{color:var(--gold)}
+.targetbox{border-color:#c044ff;background:linear-gradient(120deg,#170c46,#31106b);flex-direction:column;text-align:center;font-size:clamp(13px,1.5vw,24px);font-weight:900}.targetbox strong{font-size:clamp(30px,3.7vw,58px);color:#fff}
+.meta{border-block:2px solid #623bff;background:#090d2bdc;display:flex;justify-content:space-around;align-items:center;font-size:clamp(12px,1.65vw,25px);font-weight:900;white-space:nowrap;overflow:hidden}.meta b{color:var(--gold)}
+.main{display:grid;grid-template-columns:25% 50% 25%;gap:7px;min-height:0}
+.side{display:grid;grid-template-rows:1fr 1fr;gap:7px;min-height:0}
+.side-title{font-size:clamp(13px,1.8vw,28px);font-weight:1000;padding:8px 12px;background:linear-gradient(90deg,#0d4d9d,#111b56);border-bottom:2px solid var(--cyan);text-align:center}
+.player{min-height:0;overflow:hidden;border:2px solid #a942ff;border-radius:15px;background:linear-gradient(130deg,#050a1c,#101d45 65%,#080c21);box-shadow:0 0 15px #963aff88;display:grid;grid-template-columns:36% 64%;align-items:center;padding:7px}
+.player.bowler{border-color:#248fff;box-shadow:0 0 15px #168bff88}.player img{width:100%;height:90%;max-height:180px;object-fit:cover;object-position:top center;border-radius:12px;border:1px solid #8cbcff;background:#111}
+.player .details{text-align:center;min-width:0}.player h3{font-size:clamp(14px,2vw,31px);margin:2px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fig{font-size:clamp(25px,3.4vw,52px);font-weight:1000;color:var(--gold)}.sub{font-size:clamp(10px,1.15vw,18px);font-weight:800;color:#e0eaff;margin-top:4px}
+.center{position:relative;overflow:hidden;border:3px solid #a832ff;border-radius:18px;box-shadow:0 0 20px #b52bff,0 0 35px #087dff77;background:linear-gradient(145deg,#164d39,#287d4c 45%,#133d32)}
+.center img{width:100%;height:100%;object-fit:cover;display:block}.center .center-title{position:absolute;top:10px;left:0;right:0;text-align:center;font-weight:1000;font-size:clamp(13px,1.8vw,28px);letter-spacing:2px;text-shadow:0 2px 8px #000;z-index:2}.center .fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;color:white;text-shadow:0 2px 8px #000;font-weight:900}.center.no-gif .fallback{display:flex}.center.no-gif .fallback .emoji{font-size:clamp(65px,10vw,150px)}
+.bottomline{display:grid;grid-template-columns:1fr 1.25fr;gap:7px}.strip{border:2px solid #226cff;border-radius:13px;background:linear-gradient(90deg,#071638,#101b4c);display:flex;align-items:center;justify-content:space-around;padding:5px 12px;min-width:0;overflow:hidden}.strip strong{font-size:clamp(14px,1.8vw,28px);white-space:nowrap}.balls{display:flex;gap:5px;align-items:center}.ball{min-width:clamp(23px,3vw,44px);height:clamp(23px,3vw,44px);display:grid;place-items:center;border:1px solid #a8c6ff;border-radius:8px;background:#111a32;font-size:clamp(12px,1.5vw,22px);font-weight:1000}.ball.four{background:#08a957}.ball.six{background:#6535d7}.ball.wicket{background:#d32348}.footer{display:grid;grid-template-columns:.9fr 1.1fr;gap:7px}.info,.recent{border:2px solid #266fff;border-radius:13px;background:linear-gradient(90deg,#091637,#11194b);display:flex;align-items:center;justify-content:space-around;padding:5px 12px;min-width:0;font-size:clamp(10px,1.2vw,18px);font-weight:800}.info b,.recent b{color:var(--gold)}.recent{gap:8px}.recent span{white-space:nowrap}.status{position:absolute;right:12px;bottom:8px;font-size:10px;color:#d8e6ff}
+@media(max-aspect-ratio:4/3){.board{padding:5px;gap:4px}.main{grid-template-columns:24% 52% 24%;gap:4px}.player{grid-template-columns:1fr;padding:3px}.player img{display:none}.side-title{padding:4px}.footer{display:none}.board{grid-template-rows:7% 18% 6% minmax(0,1fr) 10%}}
+</style></head>
+<body>
+<div class="board">
+ <header class="brandbar"><div class="brand">▶ CRIC<em>FUN</em><span class="live">LIVE</span></div><div><div class="fixture" id="fixture">CRICFUN LIVE SCOREBOARD</div><div class="series" id="series">LIVE MATCH CENTRE</div></div><div class="live-right">● LIVE</div></header>
+ <section class="scoreline">
+  <div class="team-score"><img class="flag" id="flag1" hidden><div><div class="team-short" id="team1">TEAM 1</div><div class="total" id="score1">--/--</div><div class="overs" id="overs1">Overs --</div></div></div>
+  <div class="ratebox"><span>CRR <b id="crr">--</b></span><span>|</span><span>RRR <b id="rrr">--</b></span></div>
+  <div class="targetbox">TARGET<strong id="target">--</strong></div>
+  <div class="team-score right"><div><div class="team-short" id="team2">TEAM 2</div><div class="total" id="score2">--/--</div><div class="overs" id="overs2">Overs --</div></div><img class="flag" id="flag2" hidden></div>
+ </section>
+ <section class="meta"><span>P'SHIP: <b id="partnership">--</b></span><span id="need">MATCH STATUS: <b>CONNECTING</b></span><span>BOUNDARIES: <b id="boundaries">4s -- | 6s --</b></span></section>
+ <main class="main">
+  <section class="side"><div class="player"><img id="bat1photo" hidden><div class="details"><div class="side-title">BATTERS • STRIKING END</div><h3 id="bat1">Waiting for data</h3><div class="fig" id="bat1score">--</div><div class="sub" id="bat1sub">RUNS (BALLS) • SR --</div></div></div><div class="player"><img id="bat2photo" hidden><div class="details"><div class="side-title">NON-STRIKER</div><h3 id="bat2">Waiting for data</h3><div class="fig" id="bat2score">--</div><div class="sub" id="bat2sub">RUNS (BALLS) • SR --</div></div></div></section>
+  <section class="center" id="center"><div class="center-title">LIVE CRICKET ACTION</div><img id="actionGif" src="/static/cricket-action.gif" alt="Looping cricket action animation"><div class="fallback"><div class="emoji">🏏</div><div>CRICFUN • LIVE MATCH ACTION</div></div></section>
+  <section class="side"><div class="player bowler"><img id="bowlerphoto" hidden><div class="details"><div class="side-title">BOWLER</div><h3 id="bowler">Waiting for data</h3><div class="fig" id="bowlerscore">--</div><div class="sub" id="bowlersub">ECONOMY -- • DOTS --</div></div></div><div class="player bowler"><img id="lastphoto" hidden><div class="details"><div class="side-title">LAST WICKET</div><h3 id="lastWicket">--</h3><div class="fig" id="lastscore">OUT</div><div class="sub" id="lastdetail">WICKET DETAILS</div></div></div></section>
+ </main>
+ <section class="bottomline"><div class="strip"><strong>THIS OVER</strong><div class="balls" id="balls"><span class="ball">--</span></div></div><div class="strip"><strong>OVERS PROGRESS</strong><div class="balls" id="progress"><span class="ball">--</span></div><strong id="overCount">--</strong></div></section>
+ <footer class="footer"><div class="info"><span>VENUE: <b id="venue">--</b></span><span>TOSS: <b id="toss">--</b></span></div><div class="recent"><strong>RECENT OVERS</strong><span id="recent">Waiting for ball data</span></div></footer>
+</div>
 <script>
-const matchId={{ match_id|tojson }}, el=id=>document.getElementById(id);
-function get(o,keys){for(const key of keys){let v=o;for(const part of key.split('.'))v=v==null?null:v[part];if(v!==undefined&&v!==null&&v!=='')return v;}return null}
-function put(id,v){if(v!==null&&v!==undefined&&v!=='')el(id).textContent=v}
-function setImage(id,url){const im=el(id);if(url){im.src=url;im.hidden=false}else{im.hidden=true}}\nfunction render(d,cfg={}){const action=el('actionVideo'),scene=action.parentElement,gif=el('actionGif');if(cfg.center_video_url){action.src=cfg.center_video_url;action.hidden=false;scene.classList.add('video-mode')}else{action.removeAttribute('src');action.hidden=true;scene.classList.remove('video-mode');gif.hidden=false}if(cfg.center_image_url)scene.style.backgroundImage='url('+JSON.stringify(cfg.center_image_url)+')';if(cfg.animation_enabled==='false')scene.querySelector('.batter-figure').style.display='none';else scene.querySelector('.batter-figure').style.display='block';const i=d.matchInfo||{},s=d.scorecard||{},m=s.miniscore||s.miniScore||i.miniscore||{};
-put('team1',cfg.team1_name||get(i,['team1.teamName','team1.teamSName'])||'TEAM 1');put('team2',cfg.team2_name||get(i,['team2.teamName','team2.teamSName'])||'TEAM 2');setImage('team1logo',cfg.team1_logo);setImage('team2logo',cfg.team2_logo);
-const cards=s.scoreCard||s.scorecard||s.scoreDetails||[],first=Array.isArray(cards)?cards[0]||{}:{},second=Array.isArray(cards)?cards[1]||{}:{},bat=m.batTeamScore||m.battingScore||first;
-const runs=get(bat,['runs','score','teamScore']),wk=get(bat,['wickets','wkts']),ov=get(bat,['overs','over']);if(cfg.manual_mode==='true'||cfg.manual_mode==='True'){put('score1',(cfg.score1||'--')+'/'+(cfg.wickets1||'0'));put('overs1','Overs '+(cfg.overs1||'--'))}else{if(runs!==null)put('score1',runs+'/'+(wk??0));if(ov!==null)put('overs1','Overs '+ov)}
-const r2=get(second,['runs','score','teamScore']),w2=get(second,['wickets','wkts']),o2=get(second,['overs','over']);if(cfg.manual_mode==='true'||cfg.manual_mode==='True'){put('score2',(cfg.score2||'--')+'/'+(cfg.wickets2||'0'));put('overs2','Overs '+(cfg.overs2||'--'))}else{if(r2!==null)put('score2',r2+'/'+(w2??0));if(o2!==null)put('overs2','Overs '+o2)}
-put('matchState',get(i,['status','state'])||'CRICFUN');put('target',get(m,['target','targetRuns'])?'TARGET '+get(m,['target','targetRuns']):'LIVE SCORE');put('crr',cfg.crr||get(m,['crr','currentRunRate'])||'--');put('rrr',cfg.rrr||get(m,['rrr','requiredRunRate'])||'--');
-const p=m.partnerShip||m.partnership||{};put('partnership',cfg.partnership||((get(p,['runs'])??'--')+' ('+(get(p,['balls'])??'--')+')'));
-const batters=m.batsmanStrip||m.batsmen||[];if(batters[0]){put('bat1',get(batters[0],['batName','name']));put('bat1score',(get(batters[0],['runs'])??0)+' ('+(get(batters[0],['balls'])??0)+')')}put('bat1',cfg.striker||el('bat1').textContent);if(cfg.striker_runs||cfg.striker_balls)put('bat1score',(cfg.striker_runs||'0')+' ('+(cfg.striker_balls||'0')+')');setImage('bat1photo',cfg.striker_photo);if(batters[1]){put('bat2',get(batters[1],['batName','name']));put('bat2score',(get(batters[1],['runs'])??0)+' ('+(get(batters[1],['balls'])??0)+')')}put('bat2',cfg.non_striker||el('bat2').textContent);if(cfg.non_striker_runs||cfg.non_striker_balls)put('bat2score',(cfg.non_striker_runs||'0')+' ('+(cfg.non_striker_balls||'0')+')');setImage('bat2photo',cfg.non_striker_photo);
-const bowl=(m.bowlerStrip||m.bowlers||[])[0];if(bowl){put('bowler',get(bowl,['bowlName','name']));put('bowlerscore',(get(bowl,['wickets'])??0)+'-'+(get(bowl,['runs'])??0)+' ('+(get(bowl,['overs'])??0)+')')}put('bowler',cfg.bowler||el('bowler').textContent);put('bowlerscore',cfg.bowler_figures||el('bowlerscore').textContent);setImage('bowlerphoto',cfg.bowler_photo);
-const recent=get(m,['recentOvsStats','recentOvers','recentBalls']);if(cfg.this_over){el('balls').innerHTML=cfg.this_over.split(',').map(x=>'<span class="ball">'+x.trim()+'</span>').join(' ')}else if(recent){el('balls').innerHTML=String(recent).split(/[ ,]+/).filter(Boolean).slice(-6).map(x=>'<span class="ball '+(x==='4'?'four':x==='6'?'six':x.toUpperCase()==='W'?'wicket':'')+'">'+x+'</span>').join(' ')}
-put('lastWicket',cfg.last_wicket||get(m,['lastWicket','lastWicketInfo'])||'--');put('status','CONNECTED');put('notice','CricFun • Updated '+new Date().toLocaleTimeString())}
-async function refresh(){try{const r=await fetch('/api/overlay-data/'+encodeURIComponent(matchId),{cache:'no-store'}),d=await r.json();if(!r.ok)throw Error(d.error||'API request failed');let cfg={};try{cfg=await (await fetch('/api/admin-config/'+encodeURIComponent(matchId),{cache:'no-store'})).json()}catch(e){}render(d,cfg)}catch(e){put('status','API ERROR');put('notice','CricFun • '+e.message)}}refresh();setInterval(refresh,3000);
-</script></body></html>
+const matchId={{ match_id|tojson }},$=id=>document.getElementById(id);
+function val(o,paths){for(const p of paths){let v=o;for(const k of p.split('.'))v=v==null?null:v[k];if(v!==undefined&&v!==null&&v!=='')return v;}return null}
+function text(id,v){if(v!==null&&v!==undefined&&v!=='')$(id).textContent=v}
+function img(id,url){const e=$(id);if(url){e.src=url;e.hidden=false}else e.hidden=true}
+function balls(id,list){const root=$(id);root.innerHTML='';(Array.isArray(list)?list:String(list||'').split(/[ ,]+/).filter(Boolean)).slice(-12).forEach(x=>{const s=document.createElement('span');s.className='ball'+(String(x)==='4'?' four':String(x)==='6'?' six':String(x).toUpperCase()==='W'?' wicket':'');s.textContent=x;root.appendChild(s)})}
+function render(data,cfg){
+ const i=data.matchInfo||{},sc=data.scorecard||{},mini=sc.miniscore||sc.miniScore||i.miniscore||{};
+ const teams=[i.team1||{},i.team2||{}],cards=sc.scoreCard||sc.scorecard||sc.scoreDetails||[],c1=Array.isArray(cards)?cards[0]||{}:{},c2=Array.isArray(cards)?cards[1]||{}:{};
+ const demo=String(matchId).startsWith('demo-');
+ text('fixture',cfg.fixture_title||((teams[0].teamName||cfg.team1_name||'TEAM 1')+' vs '+(teams[1].teamName||cfg.team2_name||'TEAM 2')));
+ text('series',cfg.series_name||i.seriesName||'LIVE MATCH CENTRE');
+ text('team1',cfg.team1_name||teams[0].teamSName||teams[0].teamName||'TEAM 1');text('team2',cfg.team2_name||teams[1].teamSName||teams[1].teamName||'TEAM 2');
+ img('flag1',cfg.team1_logo||teams[0].imageUrl);img('flag2',cfg.team2_logo||teams[1].imageUrl);
+ const manual=cfg.manual_mode==='true'||cfg.manual_mode==='True'||demo;
+ const r1=manual?cfg.score1:val(mini,['batTeamScore.runs','battingScore.runs','runs'])??val(c1,['runs','score']);
+ const w1=manual?cfg.wickets1:val(mini,['batTeamScore.wickets','battingScore.wickets','wickets'])??val(c1,['wickets','wkts']);
+ const o1=manual?cfg.overs1:val(mini,['batTeamScore.overs','battingScore.overs','overs'])??val(c1,['overs','over']);
+ const r2=manual?cfg.score2:val(c2,['runs','score']),w2=manual?cfg.wickets2:val(c2,['wickets','wkts']),o2=manual?cfg.overs2:val(c2,['overs','over']);
+ text('score1',(r1??'--')+'/'+(w1??'--'));text('overs1','Overs '+(o1??'--'));text('score2',(r2??'--')+'/'+(w2??'--'));text('overs2','Overs '+(o2??'--'));
+ text('crr',cfg.crr||val(mini,['crr','currentRunRate'])||'--');text('rrr',cfg.rrr||val(mini,['rrr','requiredRunRate'])||'--');
+ text('target',cfg.target||val(mini,['target','targetRuns'])||'--');text('partnership',cfg.partnership||val(mini,['partnerShip.runs','partnership.runs'])||'--');
+ text('need',cfg.match_status||i.status||i.state||'MATCH STATUS: CONNECTING');text('venue',cfg.venue||val(i,['venueInfo.ground','venueInfo.city'])||'--');text('toss',cfg.toss||i.toss||'--');
+ const bat=mini.batsmanStrip||mini.batsmen||[];
+ const b1=bat[0]||{},b2=bat[1]||{};
+ text('bat1',cfg.striker||val(b1,['batName','name'])||'Waiting for data');text('bat1score',cfg.striker_runs!==undefined?(cfg.striker_runs+' ('+(cfg.striker_balls||0)+')'):(val(b1,['runs'])??'--')+' ('+(val(b1,['balls'])??'--')+')');
+ text('bat1sub','4s '+(val(b1,['fours'])??'--')+' • 6s '+(val(b1,['sixes'])??'--')+' • SR '+(val(b1,['strikeRate'])??'--'));img('bat1photo',cfg.striker_photo||b1.image);
+ text('bat2',cfg.non_striker||val(b2,['batName','name'])||'Waiting for data');text('bat2score',cfg.non_striker_runs!==undefined?(cfg.non_striker_runs+' ('+(cfg.non_striker_balls||0)+')'):(val(b2,['runs'])??'--')+' ('+(val(b2,['balls'])??'--')+')');
+ text('bat2sub','4s '+(val(b2,['fours'])??'--')+' • 6s '+(val(b2,['sixes'])??'--')+' • SR '+(val(b2,['strikeRate'])??'--'));img('bat2photo',cfg.non_striker_photo||b2.image);
+ const bowl=(mini.bowlerStrip||mini.bowlers||[])[0]||{};text('bowler',cfg.bowler||val(bowl,['bowlName','name'])||'Waiting for data');text('bowlerscore',cfg.bowler_figures||((val(bowl,['wickets'])??'--')+'/'+(val(bowl,['runs'])??'--')+' ('+(val(bowl,['overs'])??'--')+')'));text('bowlersub','ECONOMY '+(val(bowl,['economy'])??'--')+' • DOTS '+(val(bowl,['dots'])??'--'));img('bowlerphoto',cfg.bowler_photo||bowl.image);
+ text('lastWicket',cfg.last_wicket||val(mini,['lastWicket.name','lastWicketInfo'])||'--');text('lastscore',cfg.last_wicket_score||'OUT');text('lastdetail',cfg.last_wicket_detail||'LAST WICKET');img('lastphoto',cfg.last_wicket_photo);
+ const thisOver=cfg.this_over||val(mini,['recentOvsStats','recentOvers','recentBalls']);if(thisOver)balls('balls',thisOver);
+ text('boundaries','4s '+(val(mini,['total4s','fours'])??'--')+' | 6s '+(val(mini,['total6s','sixes'])??'--'));
+ const ov=String(o1??'').split('.')[0];text('overCount',(o1??'--')+' / '+(cfg.total_overs||'50'));
+ const recent=cfg.recent_overs||val(mini,['recentOvers']);if(recent)text('recent',Array.isArray(recent)?recent.join('  |  '):recent);
+ const center=$('center'),gif=$('actionGif');gif.onerror=()=>center.classList.add('no-gif');gif.onload=()=>center.classList.remove('no-gif');
+}
+async function refresh(){try{const r=await fetch('/api/overlay-data/'+encodeURIComponent(matchId),{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||'Score feed unavailable');let cfg={};try{const c=await fetch('/api/admin-config/'+encodeURIComponent(matchId),{cache:'no-store'});if(c.ok)cfg=await c.json()}catch(e){}render(d,cfg)}catch(e){text('need','FEED: '+e.message)}}
+refresh();setInterval(refresh,3000);
+</script>
+</body></html>
