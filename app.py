@@ -6,16 +6,33 @@ from admin import admin_bp
 
 load_dotenv()
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-secret-in-render')
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "change-this-secret-in-render")
 app.register_blueprint(admin_bp)
 API_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 CRICBUZZ_HOST = os.getenv("CRICBUZZ_HOST", "cricbuzz-cricket.p.rapidapi.com").strip()
 MATCH_INFO_HOST = os.getenv("MATCH_INFO_HOST", "free-cricbuzz-cricket-api.p.rapidapi.com").strip()
 
-# Cache each upstream endpoint to avoid repeatedly consuming RapidAPI quota.
 _CACHE = {}
 _CACHE_LOCK = threading.Lock()
 CACHE_SECONDS = int(os.getenv("MATCH_CACHE_SECONDS", "60"))
+
+DEMO_MATCHES = [
+    {"id":"demo-ind-nz-2026","series":"DEMO • India Tour of New Zealand 2026","title":"India vs New Zealand","status":"DEMO LIVE • Sample score only","state":"live","venue":"Wankhede Stadium, Mumbai","demo":True},
+    {"id":"demo-aus-eng-2026","series":"DEMO • International Friendly Series","title":"Australia vs England","status":"DEMO UPCOMING • Sample match","state":"upcoming","venue":"Melbourne Cricket Ground","demo":True},
+    {"id":"demo-pak-sa-2026","series":"DEMO • T20 Showcase 2026","title":"Pakistan vs South Africa","status":"DEMO UPCOMING • Sample match","state":"upcoming","venue":"Gaddafi Stadium, Lahore","demo":True}
+]
+
+DEMO_OVERLAY_CONFIG = {
+    "team1_name":"INDIA","team2_name":"NEW ZEALAND",
+    "score1":"134","wickets1":"2","overs1":"26.4",
+    "score2":"--","wickets2":"--","overs2":"--",
+    "target":"287","crr":"5.03","rrr":"6.12","partnership":"56 (72)",
+    "striker":"R. Sharma","striker_runs":"68","striker_balls":"78",
+    "non_striker":"V. Kohli","non_striker_runs":"32","non_striker_balls":"45",
+    "bowler":"M. Santner","bowler_figures":"0/24 (5.4)",
+    "last_wicket":"N. Dhir • 18 (24)","this_over":"0,1,0,4,0,1",
+    "animation_enabled":"true","manual_mode":"true"
+}
 
 class UpstreamAPIError(Exception):
     def __init__(self, message, status_code=None):
@@ -29,10 +46,8 @@ def api_get(host, path, params=None):
         cached = _CACHE.get(cache_key)
         if cached and now - cached["time"] < CACHE_SECONDS:
             return cached["data"]
-
     if not API_KEY:
         raise UpstreamAPIError("RapidAPI key is not configured.", 401)
-
     try:
         response = requests.get(
             "https://" + host + "/" + path.lstrip("/"),
@@ -41,9 +56,7 @@ def api_get(host, path, params=None):
         )
     except requests.RequestException:
         raise UpstreamAPIError("Could not connect to the cricket data provider.")
-
     if response.status_code == 429:
-        # Keep serving the last successful response, if one exists, during a rate limit.
         with _CACHE_LOCK:
             cached = _CACHE.get(cache_key)
         if cached:
@@ -53,12 +66,10 @@ def api_get(host, path, params=None):
         raise UpstreamAPIError("RapidAPI rejected the request. Check the subscription and API key.", response.status_code)
     if not response.ok:
         raise UpstreamAPIError("The cricket data provider returned an error.", response.status_code)
-
     try:
         data = response.json()
     except ValueError:
         raise UpstreamAPIError("The cricket data provider returned an invalid response.")
-
     with _CACHE_LOCK:
         _CACHE[cache_key] = {"time": now, "data": data}
     return data
@@ -82,7 +93,8 @@ def normalize(info):
         "title": (a.get("teamName") or a.get("teamSName") or "Team 1") + " vs " + (b.get("teamName") or b.get("teamSName") or "Team 2"),
         "status": info.get("status") or info.get("state") or "Scheduled",
         "state": str(info.get("state") or "").lower(),
-        "venue": (info.get("venueInfo") or {}).get("ground") or ""
+        "venue": (info.get("venueInfo") or {}).get("ground") or "",
+        "demo": False
     }
 
 def get_matches(kind):
@@ -99,7 +111,11 @@ def load_match_lists():
         except Exception:
             errors.append({"feed": kind, "message": "Unable to load this match feed.", "status_code": None})
     unique = {m["id"]: m for m in matches if m.get("id")}
-    return list(unique.values()), errors
+    matches = list(unique.values())
+    # Demo data is used only when both real feeds failed or returned no matches.
+    if not matches and errors:
+        return DEMO_MATCHES.copy(), errors
+    return matches, errors
 
 def get_match_info(match_id):
     if not re.fullmatch(r"[A-Za-z0-9_-]+", str(match_id)):
@@ -111,21 +127,26 @@ def get_match_info(match_id):
 @app.route("/")
 def index():
     matches, errors = load_match_lists()
-    return render_template("index.html", matches=matches, errors=errors)
+    demo_mode = bool(matches) and all(m.get("demo") for m in matches)
+    return render_template("index.html", matches=matches, errors=errors, demo_mode=demo_mode)
 
 @app.route("/match/<match_id>")
 def match_page(match_id):
-    try:
-        info = get_match_info(match_id)
-        a, b = info.get("team1") or {}, info.get("team2") or {}
-        match = {
-            "id": match_id,
-            "title": (a.get("teamName") or "Team 1") + " vs " + (b.get("teamName") or "Team 2"),
-            "status": info.get("status") or info.get("state") or "Match",
-            "series": info.get("seriesName") or "Cricket"
-        }
-    except Exception:
-        match = {"id": match_id, "title": "Match details unavailable", "status": "Please try again shortly", "series": "Cricket"}
+    demo = next((m for m in DEMO_MATCHES if m["id"] == match_id), None)
+    if demo:
+        match = {"id":match_id,"title":demo["title"],"status":demo["status"],"series":demo["series"]}
+    else:
+        try:
+            info = get_match_info(match_id)
+            a, b = info.get("team1") or {}, info.get("team2") or {}
+            match = {
+                "id": match_id,
+                "title": (a.get("teamName") or "Team 1") + " vs " + (b.get("teamName") or "Team 2"),
+                "status": info.get("status") or info.get("state") or "Match",
+                "series": info.get("seriesName") or "Cricket"
+            }
+        except Exception:
+            match = {"id": match_id, "title": "Match details unavailable", "status": "Please try again shortly", "series": "Cricket"}
     return render_template("generate.html", match=match)
 
 @app.route("/overlay/<match_id>")
@@ -135,19 +156,32 @@ def overlay(match_id):
 @app.route("/api/matches")
 def matches_api():
     matches, errors = load_match_lists()
+    demo_mode = bool(matches) and all(m.get("demo") for m in matches)
     response = jsonify({
         "matches": matches,
+        "demo_mode": demo_mode,
         "feeds": {
             "live": "available" if not any(e["feed"] == "live" for e in errors) else "temporarily_unavailable",
             "upcoming": "available" if not any(e["feed"] == "upcoming" for e in errors) else "temporarily_unavailable"
         },
-        "message": "Some feeds are temporarily unavailable due to provider rate limits." if errors else None
+        "message": "DEMO DATA: provider feeds unavailable; these are fictional sample matches, not live fixtures." if demo_mode else ("Some feeds are temporarily unavailable due to provider rate limits." if errors else None)
     })
     response.headers["Cache-Control"] = "public, max-age=30"
     return response
 
 @app.route("/api/overlay-data/<match_id>")
 def overlay_data(match_id):
+    if match_id.startswith("demo-"):
+        return jsonify({
+            "demo_mode": True,
+            "matchInfo": {
+                "status":"DEMO LIVE • Sample data only",
+                "state":"In Progress",
+                "team1":{"teamName":"India","teamSName":"IND"},
+                "team2":{"teamName":"New Zealand","teamSName":"NZ"}
+            },
+            "scorecard": {}
+        })
     try:
         info = get_match_info(match_id)
         try:
