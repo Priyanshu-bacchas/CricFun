@@ -81,7 +81,7 @@ function render(data,cfg){
  text('boundaries','4s '+(val(mini,['total4s','fours'])??'--')+' | 6s '+(val(mini,['total6s','sixes'])??'--'));
  const ov=String(o1??'').split('.')[0];text('overCount',(o1??'--')+' / '+(cfg.total_overs||'50'));
  const recent=cfg.recent_overs||val(mini,['recentOvers']);if(recent)text('recent',Array.isArray(recent)?recent.join('  |  '):recent);
- const center=$('center'),gif=$('actionGif');gif.onerror=()=>center.classList.add('no-gif');gif.onload=()=>center.classList.remove('no-gif');
+ const center=$('center'),gif=$('actionGif');gif.onerror=()=>{gif.hidden=true;center.classList.add('no-gif')};gif.onload=()=>{gif.hidden=false;center.classList.remove('no-gif')};
 }
 async function refresh(){try{const r=await fetch('/api/overlay-data/'+encodeURIComponent(matchId),{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||'Score feed unavailable');let cfg={};try{const c=await fetch('/api/admin-config/'+encodeURIComponent(matchId),{cache:'no-store'});if(c.ok)cfg=await c.json()}catch(e){}render(d,cfg)}catch(e){text('need','FEED: '+e.message)}}
 refresh();setInterval(refresh,3000);
