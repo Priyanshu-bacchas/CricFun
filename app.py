@@ -2,9 +2,12 @@ import os, re, time, threading
 import requests
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template
+from admin import admin_bp
 
 load_dotenv()
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-this-secret-in-render')
+app.register_blueprint(admin_bp)
 API_KEY = os.getenv("RAPIDAPI_KEY", "").strip()
 CRICBUZZ_HOST = os.getenv("CRICBUZZ_HOST", "cricbuzz-cricket.p.rapidapi.com").strip()
 MATCH_INFO_HOST = os.getenv("MATCH_INFO_HOST", "free-cricbuzz-cricket-api.p.rapidapi.com").strip()
