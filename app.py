@@ -17,9 +17,9 @@ _CACHE_LOCK = threading.Lock()
 CACHE_SECONDS = int(os.getenv("MATCH_CACHE_SECONDS", "60"))
 
 DEMO_MATCHES = [
-    {"id":"demo-ind-nz-2026","series":"DEMO • India Tour of New Zealand 2026","title":"India vs New Zealand","status":"DEMO LIVE • Sample score only","state":"live","venue":"Wankhede Stadium, Mumbai","demo":True},
-    {"id":"demo-aus-eng-2026","series":"DEMO • International Friendly Series","title":"Australia vs England","status":"DEMO UPCOMING • Sample match","state":"upcoming","venue":"Melbourne Cricket Ground","demo":True},
-    {"id":"demo-pak-sa-2026","series":"DEMO • T20 Showcase 2026","title":"Pakistan vs South Africa","status":"DEMO UPCOMING • Sample match","state":"upcoming","venue":"Gaddafi Stadium, Lahore","demo":True}
+    {"id":"demo-ind-nz-2026","series":"DEMO • India Tour of New Zealand 2026","title":"India vs New Zealand","status":"DEMO LIVE • Sample score only","state":"live","status_type":"live","start_time_ms":None,"venue":"Wankhede Stadium, Mumbai","demo":True},
+    {"id":"demo-aus-eng-2026","series":"DEMO • International Friendly Series","title":"Australia vs England","status":"DEMO UPCOMING • Sample match","state":"upcoming","status_type":"upcoming","start_time_ms":None,"venue":"Melbourne Cricket Ground","demo":True},
+    {"id":"demo-pak-sa-2026","series":"DEMO • T20 Showcase 2026","title":"Pakistan vs South Africa","status":"DEMO UPCOMING • Sample match","state":"upcoming","status_type":"upcoming","start_time_ms":None,"venue":"Gaddafi Stadium, Lahore","demo":True}
 ]
 
 DEMO_OVERLAY_CONFIG = {
@@ -85,6 +85,27 @@ def extract_matches(payload):
                     found.append(info)
     return found
 
+
+def to_epoch_ms(value):
+    """Normalize provider start-time values to JavaScript epoch milliseconds."""
+    try:
+        number = int(value)
+        if number <= 0:
+            return None
+        # Cricbuzz normally supplies milliseconds; tolerate seconds too.
+        return number * 1000 if number < 100000000000 else number
+    except (TypeError, ValueError):
+        return None
+
+def classify_match_state(info):
+    state = str(info.get("state") or "").strip().lower()
+    status = str(info.get("status") or "").strip().lower()
+    if any(word in state for word in ("live", "progress", "in progress")) or any(word in status for word in ("live", "in progress")):
+        return "live"
+    if any(word in state for word in ("complete", "result", "finished")) or any(word in status for word in ("won by", "drawn", "no result", "abandoned", "complete")):
+        return "completed"
+    return "upcoming"
+
 def normalize(info):
     a, b = info.get("team1") or {}, info.get("team2") or {}
     return {
@@ -93,6 +114,8 @@ def normalize(info):
         "title": (a.get("teamName") or a.get("teamSName") or "Team 1") + " vs " + (b.get("teamName") or b.get("teamSName") or "Team 2"),
         "status": info.get("status") or info.get("state") or "Scheduled",
         "state": str(info.get("state") or "").lower(),
+        "status_type": classify_match_state(info),
+        "start_time_ms": to_epoch_ms(info.get("startDate") or info.get("startTime") or info.get("matchStartTimestamp")),
         "venue": (info.get("venueInfo") or {}).get("ground") or "",
         "demo": False
     }
