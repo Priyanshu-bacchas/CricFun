@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CricFun Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #0c0c0c; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            padding: 20px;
+        }
+
+        /* LOGO TOP LEFT */
+        .header-brand { 
+            text-align: left; 
+            margin-bottom: 40px; 
+            padding-left: 10px;
+        }
+        .logo-main { 
+            font-size: 36px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: -1px;
+            margin: 0;
+            line-height: 1;
+        }
+        .logo-main span { color: #ffcc00; }
+        .sub-label { 
+            color: #00ffd5; 
+            font-size: 11px; 
+            font-weight: bold; 
+            letter-spacing: 3px; 
+            text-transform: uppercase;
+        }
+
+        .container { max-width: 800px; }
+
+        /* MATCH CARD */
+        .match-card { 
+            background: #1a1a1a; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            border-left: 7px solid #ffcc00; /* Thick Yellow Accent */
+            border-top: 1px solid #333;
+            border-right: 1px solid #333;
+            border-bottom: 1px solid #333;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .card-header-top {
+            padding: 12px 20px;
+            background: #222;
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .status-yellow { color: #ffcc00; text-transform: uppercase; }
+
+        .card-body-main { 
+            padding: 40px 20px; 
+            text-align: center;
+        }
+
+        .match-display-title { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #fff; 
+            margin-bottom: 25px; 
+        }
+
+        /* PINK BUTTON - CENTERED INSIDE CARD */
+        .btn-select { 
+            background-color: #ff0055; 
+            color: white; 
+            padding: 12px 35px; 
+            border: none; 
+            font-weight: 800; 
+            font-size: 15px;
+            text-transform: uppercase;
+            border-radius: 8px;
+            display: inline-block;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-select:hover { 
+            background-color: #e6004c; 
+            color: white; 
+        }
+        
+        a { text-decoration: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-brand">
+            <h1 class="logo-main">CRIC<span>FUN</span></h1>
+            <div class="sub-label">LIVE MATCHES</div>
+        </div>
+
+        {% for match in matches %}
+        <div class="match-card">
+            <div class="card-header-top">
+                <span>{{ match.series }}</span>
+                <span class="status-yellow">{{ match.status }}</span>
+            </div>
+            <div class="card-body-main">
+                <div class="match-display-title">{{ match.title }}</div>
+                <a href="/generate/{{ match.id }}" class="btn-select">SELECT MATCH (ID: {{ match.id }})</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center mt-5">
+            <p style="color: #444; font-weight: bold;">WAITING FOR API DATA...</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CricFun - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0c0c0c; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .header-nav { background: #8e44ad; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 900; font-size: 20px; text-transform: uppercase; color: white; text-decoration: none; }
+        .logo span { color: #ffcc00; }
+        
+        .nav-buttons .btn { 
+            background: rgba(255,255,255,0.1); border: 1px solid #fff; color: white; 
+            font-size: 10px; font-weight: bold; margin-left: 5px; padding: 5px 10px;
+        }
+
+        .section-title { color: #00FFD5; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; margin: 40px 0; text-align: center; }
+
+        .match-card { 
+            background: #1a1a1a; border-radius: 12px; margin: 20px auto; 
+            max-width: 750px; border-left: 6px solid #ffcc00; overflow: hidden;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.7);
+        }
+        .card-header-top { background: #252525; padding: 10px 20px; font-size: 11px; display: flex; justify-content: space-between; color: #aaa; }
+        .card-main { padding: 45px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 1px; }
+        .btn-go { background: #ff0055; color: white; border: none; width: 100%; padding: 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="header-nav">
+    <a href="/" class="logo">CRIC<span>FUN</span></a>
+    <div class="nav-buttons">
+        <button class="btn">FAKE MATCHES</button>
+        <button class="btn">LOCAL MATCHES</button>
+        <button class="btn">SUBSCRIPTION</button>
+        <button class="btn">MORE MATCHS</button>
+        <button class="btn">HELP ME</button>
+        <button class="btn">TERMS</button>
+        <button class="btn" style="background:#e74c3c; border:none;">LOGOUT</button>
+    </div>
+</div>
+
+<div class="container">
+    <h1 class="section-title">Live & Upcoming Matches</h1>
+    
+    <div class="mt-4">
+        {% for match in matches %}
+        <div class="match-card">
+            <div class="card-header-top">
+                <span>{{ match.series }}</span>
+                <span style="color: {% if match.is_live %}#00ffcc{% else %}#ffcc00{% endif %}; font-weight: bold;">
+                    {{ match.status }}
+                </span>
+            </div>
+            <div class="card-main">{{ match.title }}</div>
+            <button class="btn-go">SELECT MATCH (ID: {{ match.id }})</button>
+        </div>
+        {% else %}
+        <div class="text-center p-5">
+            <h4 class="text-muted">Abhi koi Live ya Upcoming match nahi mil raha...</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

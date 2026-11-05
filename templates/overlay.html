@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Transparent & Background Image Setup */
+        body { 
+            background: url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=2067') no-repeat center center fixed; 
+            background-size: cover;
+            color: white; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            height: 1080px;
+            width: 1920px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dark Overlay for better readability */
+        .overlay-bg {
+            background: rgba(0, 0, 0, 0.4);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .container { width: 90%; max-width: 1600px; position: relative; }
+
+        /* --- Header Score Section --- */
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+
+        .team-box { 
+            background: rgba(26, 44, 107, 0.9); 
+            border: 4px solid #f1c40f; 
+            border-radius: 15px; 
+            padding: 20px 40px; 
+            min-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .team-box h1 { font-size: 65px; margin: 0; font-weight: 900; letter-spacing: 2px; }
+        .score-val { font-size: 55px; color: #f1c40f; font-weight: bold; margin-top: 10px; }
+
+        .live-tag {
+            background: #2ecc71;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 24px;
+            border: 2px solid white;
+        }
+
+        /* --- Stats Bar --- */
+        .stats-bar {
+            background: linear-gradient(90deg, #8e44ad, #9b59b6);
+            border-radius: 50px;
+            padding: 12px 50px;
+            display: flex;
+            justify-content: space-around;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* --- Dynamic Cards Layout --- */
+        .cards-row { display: flex; gap: 30px; justify-content: center; margin-bottom: 40px; }
+
+        .card {
+            flex: 1;
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            border: 4px solid white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            max-width: 400px;
+        }
+
+        .card-bat1 { background: linear-gradient(180deg, #c0392b, #e74c3c); }
+        .card-bat2 { background: linear-gradient(180deg, #2980b9, #3498db); }
+        .card-bowl { background: linear-gradient(180deg, #16a085, #1abc9c); }
+
+        .avatar-circle {
+            width: 140px; height: 140px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px;
+            border: 5px solid #f1c40f;
+        }
+
+        .player-name { font-size: 36px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+        .player-score { font-size: 50px; color: #f1c40f; font-weight: bold; }
+
+        /* --- Over History Footer --- */
+        .over-history {
+            background: rgba(0,0,0,0.85);
+            width: 100%;
+            padding: 20px;
+            border-top: 5px solid #f1c40f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: absolute;
+            bottom: -100px;
+        }
+
+        .ball-circle {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 26px;
+            background: #444;
+        }
+
+        .b-4 { background: #2ecc71; }
+        .b-6 { background: #9b59b6; }
+        .b-w { background: #e74c3c; }
+        .b-0 { background: #333; border: 1px solid #777; }
+    </style>
+</head>
+<body>
+    <div class="overlay-bg"></div>
+
+    <div class="container">
+        <div class="header-section">
+            <div class="team-box">
+                <h1 id="t1_name">GT</h1>
+                <div class="score-val">MATCH PREVIEW</div>
+            </div>
+            <div class="live-tag">LIVE MATCH</div>
+            <div class="team-box">
+                <h1 id="t2_name">RR</h1>
+                <div class="score-val" id="t2_score">0/0 (0.0)</div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <span>CRR: <span id="crr">0.00</span></span>
+            <span>RRR: <span id="rrr">0.00</span></span>
+            <span>PARTNERSHIP: <span id="pship">0(0)</span></span>
+        </div>
+
+        <div class="cards-row">
+            <div class="card card-bat1">
+                <div class="avatar-circle">🧔</div>
+                <div class="player-name" id="bat1_name">A. SHARMA</div>
+                <div class="player-score" id="bat1_score">0(0)</div>
+            </div>
+            <div class="card card-bat2">
+                <div class="avatar-circle">👦</div>
+                <div class="player-name" id="bat2_name">K. RABADA</div>
+                <div class="player-score" id="bat2_score">0(0)</div>
+            </div>
+            <div class="card card-bowl">
+                <div class="avatar-circle">🥎</div>
+                <div class="player-name" id="bowl_name">T. DESHPANDE</div>
+                <div class="player-score" id="bowl_score">0-0 (0.0)</div>
+            </div>
+        </div>
+
+        <div class="over-history" id="over_history">
+            <span style="font-size: 24px; font-weight: bold; margin-right: 20px;">THIS OVER:</span>
+            </div>
+    </div>
+
+    <script>
+        async function updateOverlay() {
+            try {
+                const res = await fetch('/api/overlay-data/{{ match_id }}');
+                const data = await res.json();
+                const m = data.miniscore;
+
+                if(data.matchHeader) {
+                    document.getElementById('t1_name').innerText = data.matchHeader.team1.shortName;
+                    document.getElementById('t2_name').innerText = data.matchHeader.team2.shortName;
+                }
+
+                document.getElementById('t2_score').innerText = `${m.batTeamScore || '0/0'} (${m.overs || '0.0'})`;
+                document.getElementById('crr').innerText = m.crr || "0.00";
+                document.getElementById('rrr').innerText = m.rrr || "0.00";
+                document.getElementById('pship').innerText = `${m.partnerShip?.runs || 0}(${m.partnerShip?.balls || 0})`;
+
+                // Update Batsmen
+                if(m.batsmanStrip) {
+                    document.getElementById('bat1_name').innerText = m.batsmanStrip[0]?.batName.toUpperCase() || "---";
+                    document.getElementById('bat1_score').innerText = `${m.batsmanStrip[0]?.runs || 0}(${m.batsmanStrip[0]?.balls || 0})`;
+                    document.getElementById('bat2_name').innerText = m.batsmanStrip[1]?.batName.toUpperCase() || "---";
+                    document.getElementById('bat2_score').innerText = `${m.batsmanStrip[1]?.runs || 0}(${m.batsmanStrip[1]?.balls || 0})`;
+                }
+
+                // Update Bowler
+                if(m.bowlerStrip) {
+                    document.getElementById('bowl_name').innerText = m.bowlerStrip[0]?.bowlName.toUpperCase() || "---";
+                    document.getElementById('bowl_score').innerText = `${m.bowlerStrip[0]?.wickets || 0}-${m.bowlerStrip[0]?.runs || 0} (${m.bowlerStrip[0]?.overs || 0.0})`;
+                }
+
+                // Update Ball History (This Over)
+                const historyDiv = document.getElementById('over_history');
+                const recent = m.recentOvsStats?.split(' ').filter(x => x !== '...') || [];
+                let ballsHtml = '<span style="font-size: 24px; font-weight: bold; margin-right: 20px;">THIS OVER:</span>';
+                
+                recent.slice(-6).forEach(ball => {
+                    let cls = 'b-0';
+                    if(ball === '4') cls = 'b-4';
+                    if(ball === '6') cls = 'b-6';
+                    if(ball === 'W') cls = 'b-w';
+                    ballsHtml += `<div class="ball-circle ${cls}">${ball}</div>`;
+                });
+                historyDiv.innerHTML = ballsHtml;
+
+            } catch (e) { console.log("Fetch error", e); }
+        }
+
+        setInterval(updateOverlay, 2500);
+        updateOverlay();
+    </script>
+</body>
+</html>
