@@ -23,6 +23,37 @@
 @keyframes delivery{0%{left:14%;top:42%;opacity:0}18%{opacity:1}50%{left:48%;top:48%}70%{left:74%;top:20%;opacity:0}100%{left:74%;top:20%;opacity:0}}
 .footer{display:grid;grid-template-columns:1fr 1fr;gap:.7%}.overs{background:#081831f2;border:2px solid #347fff;border-radius:8px;padding:1%;display:flex;align-items:center;justify-content:center;gap:1%;font-size:clamp(11px,1.8vw,25px);font-weight:900;flex-wrap:wrap}.ball{background:#151c2b;border:1px solid #aab9d2;border-radius:5px;padding:5px 10px}.four{background:#079b5a}.six{background:#6734c5}.wicket{background:#c3263b}.notice{position:fixed;bottom:3px;left:8px;font:11px Arial;color:#ddd;text-shadow:0 1px 3px #000}
 @media(max-aspect-ratio:4/3){.stage{padding:.6%;gap:.5%}.main{grid-template-columns:25% 50% 25%}.player h2{font-size:clamp(10px,1.7vw,20px)}}
+
+:root{--cyan:#00d9ff;--blue:#147bff;--violet:#b22cff;--gold:#ffe34d}
+html,body{background:transparent!important;font-family:Arial,Helvetica,sans-serif}
+.stage{padding:.55%;grid-template-rows:18% 7% minmax(0,1fr) 15%;gap:.7%;background:radial-gradient(ellipse at 50% 30%,#17134eeb 0,#080c29ed 48%,#030612f2 100%)}
+.header{grid-template-columns:1fr .62fr 1fr;gap:.65%}
+.team,.middle,.panel{border:2px solid #287fff;border-radius:16px;background:linear-gradient(125deg,#071a43f5,#102d75f5 60%,#08122ef5);box-shadow:0 0 16px #168bff99,inset 0 0 18px #183a8b88;padding:1%}
+.team:last-child{border-color:#bb43ff;background:linear-gradient(125deg,#07122e,#14113e 60%,#300d58);box-shadow:0 0 16px #b72dff99}
+.team h1{font-size:clamp(18px,3vw,48px);text-shadow:0 0 12px #00bfff}
+.score{color:var(--gold);font-size:clamp(32px,5vw,76px);text-shadow:0 2px 4px #000}
+.middle{border-color:#974dff;background:linear-gradient(130deg,#100b37,#17115b);box-shadow:0 0 18px #a52cffaa}
+.middle strong{color:#fff;text-shadow:0 0 15px #9b4dff}
+.middle span{color:var(--gold)}
+.stats{border:1px solid #784dff;border-radius:10px;background:linear-gradient(90deg,#07112d,#16113e,#07112d);box-shadow:0 0 12px #723dff77;font-size:clamp(11px,1.55vw,24px)}
+.stats b{color:var(--gold)}
+.main{grid-template-columns:25% 50% 25%;gap:.5%}
+.side{gap:1.2%}
+.player{border:2px solid #387fff;border-radius:13px;background:linear-gradient(135deg,#050b1b,#101b3b 60%,#070d20);box-shadow:0 0 13px #176dff99,inset 0 0 20px #122b63}
+.player.batter{border-color:#d54cff;box-shadow:0 0 17px #bb35ff,inset 0 0 20px #461278}
+.player h2{font-size:clamp(13px,1.8vw,27px);text-shadow:0 0 8px #2b8cff}
+.player strong{color:var(--gold);text-shadow:0 2px 4px #000}
+.player .sub,.player small{color:#d9e8ff}
+.action{border:3px solid #b445ff;border-radius:16px;background:radial-gradient(ellipse at 50% 75%,#54a75b 0,#287b48 45%,#123c36 100%);box-shadow:0 0 18px #a62bff,0 0 30px #167bff77}
+.action-label{letter-spacing:2px;text-shadow:0 2px 6px #000,0 0 10px #b72cff}
+.action-caption{color:#fff;text-shadow:0 2px 6px #000}
+.pitch{background:linear-gradient(#d9b47a,#91633d);border-color:#f0d49d}
+.footer{grid-template-columns:1fr 1fr;gap:.6%}
+.overs{border:1px solid #347cff;border-radius:10px;background:linear-gradient(90deg,#08122e,#111b4b);box-shadow:0 0 10px #176dff66}
+.ball{border:1px solid #b5c9ff;background:#10182c;border-radius:8px;font-weight:1000}
+.four{background:#00a85a}.six{background:#6132ce}.wicket{background:#c52242}
+@media(max-aspect-ratio:4/3){.main{grid-template-columns:24% 52% 24%}.player{padding:1%}}
+
 </style></head><body><div class="stage"><div class="header"><div class="team"><img class="logo" id="team1logo" hidden><h1 id="team1">TEAM 1</h1><div class="score" id="score1">--/--</div><div id="overs1">Overs --</div></div><div class="middle"><strong id="matchState">CRICFUN LIVE</strong><span id="target">MATCH SCOREBOARD</span></div><div class="team"><img class="logo" id="team2logo" hidden><h1 id="team2">TEAM 2</h1><div class="score" id="score2">--/--</div><div id="overs2">Overs --</div></div></div>
 <div class="stats"><span>CRR <b id="crr">--</b></span><span>RRR <b id="rrr">--</b></span><span>PARTNERSHIP <b id="partnership">--</b></span><span>STATUS <b id="status">CONNECTING</b></span></div>
 <div class="main">
